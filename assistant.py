@@ -2,12 +2,13 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import streamlit as st
 import os
+import pandas as pd
 
 # ----------------------------
 # Page Config
 # ----------------------------
 st.set_page_config(
-    page_title="Amit's Co-Pilot",
+    page_title="Domain-Specific-AI-Copilot",
     layout="wide"
 )
 
@@ -65,7 +66,7 @@ if "messages" not in st.session_state:
 # ----------------------------
 with st.sidebar:
 
-    st.title("🤖 Amit's Co-Pilot")
+    st.title("Domain-Specific-AI-Copilot")
 
     if st.button("➕ New Chat"):
 
@@ -79,7 +80,7 @@ with st.sidebar:
 
         st.session_state.current_chat = f"Chat {chat_no}"
         st.session_state.messages = []
-
+        
         st.rerun()
 
     st.divider()
@@ -95,10 +96,23 @@ with st.sidebar:
 
             st.rerun()
 
+if st.session_state.messages:
+
+        df = pd.DataFrame(st.session_state.messages)
+
+        csv = df.to_csv(index=False)
+
+        st.download_button(
+            label="📥 Download Current Chat",
+            data=csv,
+            file_name=f"{st.session_state.current_chat}.csv",
+            mime="text/csv"
+        )
+
 # ----------------------------
 # Main Page
 # ----------------------------
-st.title("🤖 Amit's Co-Pilot")
+st.title("Domain-Specific-AI-Copilot")
 st.caption(f"Current Conversation: {st.session_state.current_chat}")
 
 # ----------------------------
@@ -140,5 +154,4 @@ if user_input:
     st.session_state.chat_history[
         st.session_state.current_chat
     ] = st.session_state.messages.copy()
-
     st.rerun()
